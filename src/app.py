@@ -1,23 +1,22 @@
-import random
 import smtplib
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+import aerospike
 import requests
-import toml
-from carriers import carrier2email
-from scrape_insta import scrape_insta
 
-config = toml.load('/Users/ScottWeitzner/Desktop/insta-text/config.toml')
-EMAIL_CONFIG = config['email']
+from src.carriers import carrier2email
+from src.constants import RECIPIENTS, AEROSPIKE_CONFIG, EMAIL_CONFIG, PROFILES
+from src.scrape_insta import get_latest_post_for_profile
+
+as_client = aerospike.client(config={'hosts': [(AEROSPIKE_CONFIG['host'], AEROSPIKE_CONFIG['port'])]}).connect()
 
 
 def main():
     # prepare numbers as emails appropriately based on carrier
-    number_objects = config['sending']['to']
     to_emails = ','.join([f'{number_obj["number"]}{carrier2email[number_obj["carrier"]]["mms"]}'
-                          for number_obj in number_objects])
+                          for number_obj in RECIPIENTS])
 
     with smtplib.SMTP_SSL(EMAIL_CONFIG['host'], EMAIL_CONFIG['port']) as server:
         server.ehlo()
@@ -28,10 +27,8 @@ def main():
         msg['To'] = to_emails
         msg['From'] = EMAIL_CONFIG['email']
 
-        for user in config['instagram']['profiles']:
-            posts = scrape_insta(user)
-            post = posts[random.randint(0, len(posts))]
-
+        for user in PROFILES:
+            post = get_latest_post_for_profile(user)
             req = requests.get(post.image_url, stream=True)
             image = MIMEImage(req.content)
             msg.attach(image)

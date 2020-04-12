@@ -4,13 +4,16 @@ port = 465
 email = "YOUR_EMAIL"
 password = "YOUR_PASSWORD"
 
-[sending]
 # add the numbers to send texts to here as strings in 10 digit format. ex: xxxxxxxxxx
 [sending]
-to = [
+recipients = [
     {number = "YOUR_NUMBER", carrier = "verizon"}
 ]
 
 [instagram]
 # add the profiles to scrape/watch here
-profiles = ["lowcost_cosplay"]
+profiles = ["artynside", "usrowing"]
+
+[aerospike]
+host = '127.0.0.1'
+port = 3000

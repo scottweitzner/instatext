@@ -23,7 +23,7 @@ conda activate insta-text
 **Setup Aerospike**
 ```shell script
 docker pull aerospike
-docker run -d --name aerospike -p 3000:3000 -p 3001:3001 -p 3002:3002 -p 3003:3003 aerospike
+docker run -d -v <PATH_TO_REPO>/insta-text/aerospike:/opt/aerospike/etc --name aerospike -p 3000:3000 -p 3001:3001 -p 3002:3002 -p 3003:3003 aerospike asd --foreground --config-file /opt/aerospike/etc/aerospike.conf
 ```
 
 **Run**

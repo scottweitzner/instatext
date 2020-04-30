@@ -3,14 +3,11 @@ from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-import aerospike
 import requests
 
 from src.carriers import carrier2email
-from src.constants import RECIPIENTS, AEROSPIKE_CONFIG, EMAIL_CONFIG, PROFILES
+from src.constants import RECIPIENTS, EMAIL_CONFIG, PROFILES
 from src.scrape_insta import get_latest_post_for_profile
-
-as_client = aerospike.client(config={'hosts': [(AEROSPIKE_CONFIG['host'], AEROSPIKE_CONFIG['port'])]}).connect()
 
 
 def main():
